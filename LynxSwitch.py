@@ -104,10 +104,10 @@ class LynxSwitch(app_manager.RyuApp):
                                   in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
 
-        @set_ev_cls(ovsdb_event.EventNewOVSDBConnection)
-        def handle_new_ovsdb_connection(self, ev):
-            system_id = ev.system_id
-            address = ev.client.address
-            self.logger.info(
-                'New OVSDB connection from system-id=%s, address=%s',
-                system_id, address)
+    @set_ev_cls(ovsdb_event.EventNewOVSDBConnection)
+    def handle_new_ovsdb_connection(self, ev):
+        system_id = ev.system_id
+        address = ev.client.address
+        self.logger.info(
+            'New OVSDB connection from system-id=%s, address=%s',
+            system_id, address)
