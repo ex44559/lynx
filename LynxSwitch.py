@@ -7,6 +7,7 @@ from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 from ryu.services.protocols.ovsdb import event as ovsdb_event
+from ryu.services.protocols.ovsdb import api as ovsdb
 
 
 class LynxSwitch(app_manager.RyuApp):
@@ -111,3 +112,6 @@ class LynxSwitch(app_manager.RyuApp):
         self.logger.info(
             'New OVSDB connection from system-id=%s, address=%s',
             system_id, address)
+
+        bridges = ovsdb.get_bridges_by_system_id(self, system_id)
+        self.logger.info('bridges of system-id=%s is %s', system_id, bridges)
