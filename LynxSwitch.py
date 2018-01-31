@@ -114,4 +114,5 @@ class LynxSwitch(app_manager.RyuApp):
             system_id, address)
 
         bridges = ovsdb.get_bridges_by_system_id(self, system_id)
-        self.logger.info('bridges of system-id=%s is %s', system_id, bridges)
+        for bridge in bridges:
+            self.logger.info('one of bridges of system-id=%s is %s', system_id, bridge)
