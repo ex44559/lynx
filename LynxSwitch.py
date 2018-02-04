@@ -113,12 +113,6 @@ class LynxSwitch(app_manager.RyuApp):
             'New OVSDB connection from system-id=%s, address=%s',
             system_id, address)
 
-        bridges = ovsdb.get_table(self, system_id, 'Bridge')
-        self.logger.info(bridges.columns.keys())
-
         hardware_info = ovsdb.get_table(self, system_id, 'HardwareInfo')
-        self.logger.info(hardware_info.columns.keys())
+        self.logger.info(hardware_info.rows.values())
 
-        # bridges = ovsdb.get_bridges_by_system_id(self, system_id)
-        # for b in bridges:
-        #     self.logger.info(str(b.uuid))
