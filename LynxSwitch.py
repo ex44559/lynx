@@ -115,4 +115,6 @@ class LynxSwitch(app_manager.RyuApp):
 
         hardware_info = ovsdb.get_table(self, system_id, 'HardwareInfo')
         self.logger.info(hardware_info.rows.values())
+        for row in hardware_info.rows:
+            self.logger.info(row.values())
 
