@@ -146,6 +146,7 @@ class LynxSwitch(app_manager.RyuApp):
         self.logger.info("Speed \t 40000")
         self.logger.info("Type \t Ethernet")
         self.logger.info("ports \t 2a74fd6c-f00d-478b-b606-8affea411a93")
+        self.logger.info("======= read Netdev table done.===========")
 
         self.logger.info("choose Normal NUMA mode.")
         self.logger.info("choose ALB-bonding mode.")
