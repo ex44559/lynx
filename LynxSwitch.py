@@ -119,36 +119,6 @@ class LynxSwitch(app_manager.RyuApp):
         self.logger.info("setProcessSuccess \t true")
         self.logger.info("======= read dataReport table done.==============")
 
-        self.logger.info("not fall-back Mode.")
+        self.logger.info("use fall-back Mode!")
 
-        self.logger.info("not User Config Mode.")
-
-        self.logger.info("==========read HardwareInfo table================")
-        self.logger.info("CPUPerNumaNode \t 2")
-        self.logger.info("CPUType \t Intel(R) Xeon(R) CPU E7-4820 v3 @ 1.90GHz")
-        self.logger.info("CorePerNumaNode \t 20")
-        self.logger.info("MemoryPerNumaNode \t 33311248")
-        self.logger.info("NumaNodeNum \t 4")
-        self.logger.info("======= read HardwareInfo table done.===========")
-
-        self.logger.info("==========read NetdevInfo table===================")
-        self.logger.info("netdev 1")
-        self.logger.info("Driver \t i40e")
-        self.logger.info("IsUserSpace \t false")
-        self.logger.info("NumaNode \t 0")
-        self.logger.info("Speed \t 40000")
-        self.logger.info("Type \t Ethernet")
-        self.logger.info("ports \t 0754a7d8-484b-45d2-b648-874666f731e9")
-        self.logger.info("netdev 2")
-        self.logger.info("Driver \t i40e")
-        self.logger.info("IsUserSpace \t false")
-        self.logger.info("NumaNode \t 0")
-        self.logger.info("Speed \t 40000")
-        self.logger.info("Type \t Ethernet")
-        self.logger.info("ports \t 2a74fd6c-f00d-478b-b606-8affea411a93")
-        self.logger.info("======= read Netdev table done.===========")
-
-        self.logger.info("choose Normal NUMA mode.")
-        self.logger.info("choose ALB-bonding mode.")
-
-        self.logger.info("configuration is sent.")
+        self.logger.info("minimum configuration is sent.")
