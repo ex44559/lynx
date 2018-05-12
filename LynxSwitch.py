@@ -127,7 +127,7 @@ class LynxSwitch(app_manager.RyuApp):
         hardware_info = {}
         hardware_info_table = ovsdb.get_table(self, system_id, 'HardwareInfo')
         for row in hardware_info_table.rows.values():
-            hardware_info.['CPUPerNumaNode'] = row.CPUPerNumaNode
+            hardware_info['CPUPerNumaNode'] = row.CPUPerNumaNode
             self.logger.info("CPUPerNumaNode \t %d" % hardware_info['CPUPerNumaNode'])
 
             hardware_info['CPUType'] = row.CPUType
