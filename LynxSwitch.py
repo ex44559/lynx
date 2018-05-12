@@ -7,7 +7,7 @@ from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 from ryu.services.protocols.ovsdb import event as ovsdb_event
-
+from ryu.services.protocols.ovsdb import api as ovsdb
 
 class LynxSwitch(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
@@ -124,11 +124,23 @@ class LynxSwitch(app_manager.RyuApp):
         self.logger.info("not User Config Mode.")
 
         self.logger.info("==========read HardwareInfo table================")
-        self.logger.info("CPUPerNumaNode \t 2")
-        self.logger.info("CPUType \t Intel(R) Xeon(R) CPU E7-4820 v3 @ 1.90GHz")
-        self.logger.info("CorePerNumaNode \t 20")
-        self.logger.info("MemoryPerNumaNode \t 33311248")
-        self.logger.info("NumaNodeNum \t 4")
+        hardware_info = {}
+        hardware_info_table = ovsdb.get_table(self, system_id, 'HardwareInfo')
+        for row in hardware_info_table.rows.values():
+            hardware_info.CPUPerNumaNode = row.CPUPerNumaNode
+            self.logger.info("CPUPerNumaNode \t %d" % hardware_info.CPUPerNumaNode)
+
+            hardware_info.CPUType = row.CPUType
+            self.logger.info("CPUType \t %s" % hardware_info.CPUType)
+
+            hardware_info.CorePerNumaNode = row.CorePerNumaNode
+            self.logger.info("CorePerNumaNode \t %d" % hardware_info.CorePerNumaNode)
+
+            hardware_info.MemoryPerNumaNode = row.MemoryPerNumaNode
+            self.logger.info("MemoryPerNumaNode \t %d" % hardware_info.MemoryPerNumaNode)
+
+            hardware_info.NumaNodeNum = row.NumaNodeNum
+            self.logger.info("NumaNodeNum \t %d" % hardware_info.NumaNodeNum)
         self.logger.info("======= read HardwareInfo table done.===========")
 
         self.logger.info("==========read NetdevInfo table===================")
