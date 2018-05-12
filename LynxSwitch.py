@@ -127,20 +127,20 @@ class LynxSwitch(app_manager.RyuApp):
         hardware_info = {}
         hardware_info_table = ovsdb.get_table(self, system_id, 'HardwareInfo')
         for row in hardware_info_table.rows.values():
-            hardware_info.CPUPerNumaNode = row.CPUPerNumaNode
-            self.logger.info("CPUPerNumaNode \t %d" % hardware_info.CPUPerNumaNode)
+            hardware_info.['CPUPerNumaNode'] = row.CPUPerNumaNode
+            self.logger.info("CPUPerNumaNode \t %d" % hardware_info['CPUPerNumaNode'])
 
-            hardware_info.CPUType = row.CPUType
-            self.logger.info("CPUType \t %s" % hardware_info.CPUType)
+            hardware_info['CPUType'] = row.CPUType
+            self.logger.info("CPUType \t %s" % hardware_info['CPUType'])
 
-            hardware_info.CorePerNumaNode = row.CorePerNumaNode
-            self.logger.info("CorePerNumaNode \t %d" % hardware_info.CorePerNumaNode)
+            hardware_info['CorePerNumaNode'] = row.CorePerNumaNode
+            self.logger.info("CorePerNumaNode \t %d" % hardware_info['CorePerNumaNode'])
 
-            hardware_info.MemoryPerNumaNode = row.MemoryPerNumaNode
-            self.logger.info("MemoryPerNumaNode \t %d" % hardware_info.MemoryPerNumaNode)
+            hardware_info['MemoryPerNumaNode'] = row.MemoryPerNumaNode
+            self.logger.info("MemoryPerNumaNode \t %d" % hardware_info['MemoryPerNumaNode'])
 
-            hardware_info.NumaNodeNum = row.NumaNodeNum
-            self.logger.info("NumaNodeNum \t %d" % hardware_info.NumaNodeNum)
+            hardware_info['NumaNodeNum'] = row.NumaNodeNum
+            self.logger.info("NumaNodeNum \t %d" % hardware_info['NumaNodeNum'])
         self.logger.info("======= read HardwareInfo table done.===========")
 
         self.logger.info("==========read NetdevInfo table===================")
