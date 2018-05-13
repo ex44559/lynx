@@ -9,6 +9,7 @@ from ryu.lib.packet import ether_types
 from ryu.services.protocols.ovsdb import event as ovsdb_event
 from ryu.services.protocols.ovsdb import api as ovsdb
 
+
 class LynxSwitch(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
 
@@ -144,20 +145,26 @@ class LynxSwitch(app_manager.RyuApp):
         self.logger.info("======= read HardwareInfo table done.===========")
 
         self.logger.info("==========read NetdevInfo table===================")
-        self.logger.info("netdev 1")
-        self.logger.info("Driver \t i40e")
-        self.logger.info("IsUserSpace \t false")
-        self.logger.info("NumaNode \t 0")
-        self.logger.info("Speed \t 40000")
-        self.logger.info("Type \t Ethernet")
-        self.logger.info("ports \t 0754a7d8-484b-45d2-b648-874666f731e9")
-        self.logger.info("netdev 2")
-        self.logger.info("Driver \t i40e")
-        self.logger.info("IsUserSpace \t false")
-        self.logger.info("NumaNode \t 0")
-        self.logger.info("Speed \t 40000")
-        self.logger.info("Type \t Ethernet")
-        self.logger.info("ports \t 2a74fd6c-f00d-478b-b606-8affea411a93")
+        netdev_info = []
+        netdev_info_table = ovsdb.get_table(self, system_id, 'HardwareInfo')
+        i = 0
+        for row in netdev_info_table.rows.values():
+            i += 1
+            netdev_info_row = {}
+            self.logger.info("netdev %d" % i)
+            netdev_info_row['Driver'] = row.Driver
+            self.logger.info("Driver \t %s" % netdev_info_row['Driver'])
+            netdev_info_row['isUserSpace'] = row.isUserSpace
+            self.logger.info("IsUserSpace \t %d" % netdev_info_row['isUserSpace'])
+            netdev_info_row['NumaNode'] = row.NumaNode
+            self.logger.info("NumaNode \t %d" % netdev_info_row['NumaNode'])
+            netdev_info_row['Speed'] = row.Speed
+            self.logger.info("Speed \t %s" % netdev_info_row['Speed'])
+            netdev_info_row['Type'] = row.Type
+            self.logger.info("Type \t %s" % netdev_info_row['Type'])
+            netdev_info_row['ports'] = row.ports
+            self.logger.info("ports \t %s" % netdev_info_row['ports'])
+            netdev_info.append(netdev_info_row)
         self.logger.info("======= read Netdev table done.===========")
 
         self.logger.info("choose Normal NUMA mode.")
