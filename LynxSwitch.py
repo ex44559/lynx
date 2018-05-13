@@ -146,7 +146,7 @@ class LynxSwitch(app_manager.RyuApp):
 
         self.logger.info("==========read NetdevInfo table===================")
         netdev_info = []
-        netdev_info_table = ovsdb.get_table(self, system_id, 'HardwareInfo')
+        netdev_info_table = ovsdb.get_table(self, system_id, 'NetdevInfo')
         i = 0
         for row in netdev_info_table.rows.values():
             i += 1
