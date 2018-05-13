@@ -154,8 +154,8 @@ class LynxSwitch(app_manager.RyuApp):
             self.logger.info("netdev %d" % i)
             netdev_info_row['Driver'] = row.Driver
             self.logger.info("Driver \t %s" % netdev_info_row['Driver'])
-            netdev_info_row['isUserSpace'] = row.isUserSpace
-            self.logger.info("IsUserSpace \t %d" % netdev_info_row['isUserSpace'])
+            netdev_info_row['IsUserSpace'] = row.IsUserSpace
+            self.logger.info("IsUserSpace \t %d" % netdev_info_row['IsUserSpace'])
             netdev_info_row['NumaNode'] = row.NumaNode
             self.logger.info("NumaNode \t %d" % netdev_info_row['NumaNode'])
             netdev_info_row['Speed'] = row.Speed
