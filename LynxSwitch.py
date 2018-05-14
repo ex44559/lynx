@@ -114,10 +114,17 @@ class LynxSwitch(app_manager.RyuApp):
             system_id, address)
 
         self.logger.info("==========read dataReport table==================")
-        self.logger.info("ConfigError \t false")
-        self.logger.info("ErrorMessage")
-        self.logger.info("isAlbMode \t true")
-        self.logger.info("setProcessSuccess \t true")
+        data_report_info = {}
+        data_report_info_table = ovsdb.get_table(self, system_id, 'dataReport')
+        for row in data_report_info_table.rows.values():
+            data_report_info['ConfigError'] = row.ConfigError
+            self.logger.info("ConfigError \t %r" % data_report_info['ConfigError'])
+            data_report_info['ErrorMessage'] = row.ErrorMessage
+            self.logger.info("ErrorMessage \t %s" % data_report_info['ErrorMessage'])
+            data_report_info['isAlbMode'] = row.isAlbMode
+            self.logger.info("isAlbMode \t %r" % data_report_info['isAlbMode'])
+            data_report_info['setProcessSuccess'] = row.setProcessSuccess
+            self.logger.info("setProcessSuccess \t %r" % data_report_info['setProcessSuccess'])
         self.logger.info("======= read dataReport table done.==============")
 
         self.logger.info("not fall-back Mode.")
@@ -155,7 +162,7 @@ class LynxSwitch(app_manager.RyuApp):
             netdev_info_row['Driver'] = row.Driver
             self.logger.info("Driver \t %s" % netdev_info_row['Driver'])
             netdev_info_row['IsUserSpace'] = row.IsUserSpace
-            self.logger.info("IsUserSpace \t %d" % netdev_info_row['IsUserSpace'])
+            self.logger.info("IsUserSpace \t %r" % netdev_info_row['IsUserSpace'])
             netdev_info_row['NumaNode'] = row.NumaNode
             self.logger.info("NumaNode \t %d" % netdev_info_row['NumaNode'])
             netdev_info_row['Speed'] = row.Speed
