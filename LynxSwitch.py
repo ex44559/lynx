@@ -1,3 +1,4 @@
+import uuid
 from ryu.base import app_manager
 from ryu.ofproto import ofproto_v1_3
 from ryu.controller.handler import set_ev_cls
@@ -8,7 +9,6 @@ from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 from ryu.services.protocols.ovsdb import event as ovsdb_event
 from ryu.services.protocols.ovsdb import api as ovsdb
-
 
 class LynxSwitch(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
@@ -127,8 +127,14 @@ class LynxSwitch(app_manager.RyuApp):
             self.logger.info("setProcessSuccess \t %r" % data_report_info['setProcessSuccess'])
         self.logger.info("======= read dataReport table done.==============")
 
-        self.logger.info("not fall-back Mode.")
+        if data_report_info['setProcessSuccess']:
+            fall_back_mode = False
+            self.logger.info("not fall-back Mode.")
+        else:
+            fall_back_mode = True
+            self.logger.info("use fall-back Mode.")
 
+        user_config_mode = False
         self.logger.info("not User Config Mode.")
 
         self.logger.info("==========read HardwareInfo table================")
@@ -174,7 +180,37 @@ class LynxSwitch(app_manager.RyuApp):
             netdev_info.append(netdev_info_row)
         self.logger.info("======= read Netdev table done.===========")
 
-        self.logger.info("choose Normal NUMA mode.")
-        self.logger.info("choose ALB-bonding mode.")
+        if fall_back_mode is False:
+            numa_mode = True
+            self.logger.info("choose Normal NUMA mode.")
+            alb_mode = True
+            self.logger.info("choose ALB-bonding mode.")
+        else:
+            numa_mode = False
+            self.logger.info("not use Normal NUMA mode.")
+            alb_mode = False
+            self.logger.info("not use ALB-bonding mode.")
 
-        self.logger.info("configuration is sent.")
+        new_issued_config_uuid = uuid.uuid4()
+
+        def user_mode_modify(tables, insert):
+            pass
+
+        def modify(tables, insert):
+            issued_config_row = insert('IssuedConfig', new_issued_config_uuid)
+            issued_config_row.IsFallbackMode = fall_back_mode
+            issued_config_row.IsUserConfigMode = user_config_mode
+            issued_config_row.ProcessToNode = 0
+            issued_config_row.isAlbMode = alb_mode
+            issued_config_row.configChanged = True
+
+            return new_issued_config_uuid,
+
+        if user_config_mode:
+            request = ovsdb_event.EventModifyRequest(system_id, user_mode_modify)
+        else:
+            request = ovsdb_event.EventModifyRequest(system_id, modify)
+        reply = self.send_request(request)
+
+        issued_config_uuid = reply.insert_uuids[new_issued_config_uuid]
+        self.logger.info("issued config uuid is %s" % issued_config_uuid)
