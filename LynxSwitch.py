@@ -197,7 +197,7 @@ class LynxSwitch(app_manager.RyuApp):
             pass
 
         def modify(tables, insert):
-            issued_config_row = insert('IssuedConfig', new_issued_config_uuid)
+            issued_config_row = insert(tables['IssuedConfig'], new_issued_config_uuid)
             issued_config_row.IsFallbackMode = fall_back_mode
             issued_config_row.IsUserConfigMode = user_config_mode
             issued_config_row.ProcessToNode = 0
