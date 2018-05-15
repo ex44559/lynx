@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import uuid
 from ryu.base import app_manager
 from ryu.ofproto import ofproto_v1_3
@@ -9,6 +10,7 @@ from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 from ryu.services.protocols.ovsdb import event as ovsdb_event
 from ryu.services.protocols.ovsdb import api as ovsdb
+
 
 class LynxSwitch(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
@@ -105,14 +107,17 @@ class LynxSwitch(app_manager.RyuApp):
                                   in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
 
+    # 处理OVSDB连接，使用装饰器修饰
     @set_ev_cls(ovsdb_event.EventNewOVSDBConnection)
     def handle_new_ovsdb_connection(self, ev):
+        # 获取连入的OVS实例的system_id
         system_id = ev.system_id
         address = ev.client.address
         self.logger.info(
             'New OVSDB connection from system-id=%s, address=%s',
             system_id, address)
 
+        # 读取dataReport表中的反馈信息
         self.logger.info("==========read dataReport table==================")
         data_report_info = {}
         data_report_info_table = ovsdb.get_table(self, system_id, 'dataReport')
@@ -127,6 +132,7 @@ class LynxSwitch(app_manager.RyuApp):
             self.logger.info("setProcessSuccess \t %r" % data_report_info['setProcessSuccess'])
         self.logger.info("======= read dataReport table done.==============")
 
+        # 判断是否使用fall-back模式
         if data_report_info['setProcessSuccess']:
             fall_back_mode = False
             self.logger.info("not fall-back Mode.")
@@ -137,6 +143,7 @@ class LynxSwitch(app_manager.RyuApp):
         user_config_mode = False
         self.logger.info("not User Config Mode.")
 
+        # 读取记载NUMA环境信息的HardwareInfo表
         self.logger.info("==========read HardwareInfo table================")
         hardware_info = {}
         hardware_info_table = ovsdb.get_table(self, system_id, 'HardwareInfo')
@@ -157,6 +164,7 @@ class LynxSwitch(app_manager.RyuApp):
             self.logger.info("NumaNodeNum \t %d" % hardware_info['NumaNodeNum'])
         self.logger.info("======= read HardwareInfo table done.===========")
 
+        # 读取记载网络设备信息的NetdevInfo表
         self.logger.info("==========read NetdevInfo table===================")
         netdev_info = []
         netdev_info_table = ovsdb.get_table(self, system_id, 'NetdevInfo')
@@ -196,21 +204,24 @@ class LynxSwitch(app_manager.RyuApp):
         def user_mode_modify(tables, insert):
             pass
 
+        # 按照此前的决策生成对应的配置项
         def modify(tables, insert):
             issued_config_row = insert(tables['IssuedConfig'], new_issued_config_uuid)
             issued_config_row.IsFallbackMode = fall_back_mode
             issued_config_row.IsUserConfigMode = user_config_mode
-            issued_config_row.ProcessToNode = 0
+            issued_config_row.ProcessToNode = 2
             issued_config_row.isAlbMode = alb_mode
             issued_config_row.configChanged = True
 
             return new_issued_config_uuid,
 
+        # 发起事务，将信息写入OVS实例的IssuedConfig表中
         if user_config_mode:
             request = ovsdb_event.EventModifyRequest(system_id, user_mode_modify)
         else:
             request = ovsdb_event.EventModifyRequest(system_id, modify)
         reply = self.send_request(request)
 
+        # 获取插入后对应行的UUID
         issued_config_uuid = reply.insert_uuids[new_issued_config_uuid]
         self.logger.info("issued config uuid is %s" % issued_config_uuid)
